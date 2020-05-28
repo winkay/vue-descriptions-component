@@ -1,6 +1,6 @@
 <template>
   <div>
-    <descriptions :column="5">
+    <descriptions :column="3">
       <template v-slot:title>
         <span style="color:red">Descriptions Title Slot</span>
       </template>

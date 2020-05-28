@@ -68,7 +68,13 @@ export default {
       let children = []
       dataList.forEach((item, index) => {
         const itemAttrs = item.data.attrs || {}
-        leftSpan -= itemAttrs.span || 1
+        // 处理column与span之间的关系
+        if (leftSpan <= (itemAttrs.span || 1)) { // 剩余的列数小于设置的span个数
+          itemAttrs.span = leftSpan
+          leftSpan = 0
+        } else {
+          leftSpan -= itemAttrs.span || 1
+        }
         children.push({
           span: itemAttrs.span || 1,
           label: (item.data && itemAttrs.label) || '',
@@ -79,6 +85,7 @@ export default {
           this.$set(this.rows, this.rows.length, children)
           children = []
         }
+        // 最后一行
         if (dataList.length % this.column < this.column && index === (dataList.length - 1)) {
           this.$set(this.rows, this.rows.length, children)
         }
