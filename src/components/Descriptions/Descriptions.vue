@@ -2,21 +2,46 @@
 * 详情描述组件
 */
 <template>
-  <div>
-    <div class="description-title">
-      <slot name='title'>{{title}}</slot>
+  <div
+    :class="[, {
+    'descriptions-bordered': bordered,
+    'descriptions': size==='default',
+    'descriptions-middle': size==='middle',
+    'descriptions-small': size==='small'}]"
+  >
+    <div class="descriptions-title" v-if="title">
+      <slot name="title">{{title}}</slot>
     </div>
-    <div class="description-view">
-      <table class="description-table">
+    <div class="descriptions-view">
+      <table class="descriptions-table">
         <tbody>
-          <tr :key="key" class="description-tr" v-for="(row, key) in rows">
+          <tr :key="key" class="descriptions-row" v-for="(row, key) in rows">
             <template v-for="(item, index) in row">
-              <th class="description-label" :key="'label-' + key + '-' + index">
-                {{item.label}}
-              </th>
-              <td class="description-content" :colSpan="item.span*2-1" :key="'content-' + key + '-' + index">
-                <description-content :item="item"></description-content>
-              </td>
+              <template v-if="bordered">
+                <th
+                  :key="'label-' + key + '-' + index"
+                  class="descriptions-item-label"
+                >{{item.label}}</th>
+                <td
+                  :colSpan="item.span*2-1"
+                  :key="'content-' + key + '-' + index"
+                  class="descriptions-item-content"
+                >
+                  <description-content :item="item"></description-content>
+                </td>
+              </template>
+              <template v-else>
+                <td
+                  :colSpan="item.span*2-1"
+                  :key="'content-' + key + '-' + index"
+                  class="descriptions-item"
+                >
+                  <span class="descriptions-item-label">{{item.label}}</span>
+                  <span class="descriptions-item-content">
+                    <description-content :item="item"></description-content>
+                  </span>
+                </td>
+              </template>
             </template>
           </tr>
         </tbody>
@@ -41,9 +66,18 @@ export default {
   },
   props: {
     title: null, // 描述内容标题
-    column: { // 每行显示的项目个数
+    size: {
+      type: String,
+      default: 'default'
+    },
+    bordered: {
+      type: Boolean,
+      default: false
+    },
+    column: {
+      // 每行显示的项目个数
       type: Number,
-      default: 4
+      default: 3
     }
   },
   data() {
@@ -95,61 +129,134 @@ export default {
 }
 </script>
 
-<style scoped>
-  .description-title {
-    margin-bottom: 20px;
-    color: rgba(0,0,0,.85);
-    font-weight: 700;
-    font-size: 16px;
-    line-height: 1.5;
-  }
-  .description-view {
+<style lang="scss">
+.descriptions-title {
+  margin-bottom: 20px;
+  color: rgba(0, 0, 0, 0.85);
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 1.5715;
+}
+
+.descriptions-view {
+  width: 100%;
+  overflow: hidden;
+  border-radius: 2px;
+
+  table {
     width: 100%;
-    border: 1px solid #e8e8e8;
-  }
-  .description-view .description-table {
-    width: 100%;
-    /* border: 1px solid #e8e8e8; */
-    border-collapse: collapse;
     table-layout: fixed;
   }
-  .description-view .description-tr {
-    border-bottom: 1px solid #e8e8e8;
-    width: 100%;
-  }
-  .description-view .description-tr:last-child {
+
+  &:last-child {
     border-bottom: none;
   }
-  .description-view .description-label {
-    border-right: 1px solid #e8e8e8;
-    background-color: #fafafa;
+
+  .descriptions-row > th, .descriptions-row > td {
+    padding-bottom: 16px;
+  }
+
+  .descriptions-row, .descriptions-item-label {
     color: rgba(0, 0, 0, 0.85);
     font-weight: 400;
     font-size: 14px;
-    line-height: 22px;
-    /* margin-right: 8px; */
-    padding: 12px 16px;
-    white-space: nowrap;
-    display: table-cell;
+    line-height: 1.5715;
+    text-align: start;
   }
-  .description-view .description-label:after {
-    content: ""; /** content: ":" */
-    margin: 0 8px 0 2px;
+
+  .descriptions-item-label::after {
+    content: ':';
     position: relative;
     top: -0.5px;
+    margin: 0 8px 0 2px;
   }
-  .description-view .description-content {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    border-right: 1px solid #e8e8e8;
-    font-size: 14px;
-    line-height: 1.5;
-    padding: 12px 16px;
-    color: rgba(0, 0, 0, 0.65);
+
+  .descriptions-item-label.descriptions-item-no-colon::after {
+    content: ' ';
+  }
+
+  .descriptions-item-no-label::after {
+    margin: 0;
+    content: '';
+  }
+
+  .descriptions-item-content {
     display: table-cell;
+    color: rgba(0, 0, 0, 0.65);
+    font-size: 14px;
+    line-height: 1.5715;
   }
-  .description-tr .description-content:last-child {
+
+  .descriptions-item {
+    padding-bottom: 0;
+  }
+
+  .descriptions-item > span {
+    display: -webkit-inline-box;
+    display: -ms-inline-flexbox;
+    display: inline-flex;
+    -webkit-box-align: baseline;
+    -ms-flex-align: baseline;
+    align-items: baseline;
+  }
+
+  .descriptions-middle .descriptions-row > th, .descriptions-middle .descriptions-row > td {
+    padding-bottom: 12px;
+  }
+
+  .descriptions-small .descriptions-row > th, .descriptions-small .descriptions-row > td {
+    padding-bottom: 8px;
+  }
+}
+
+.descriptions-bordered {
+  .descriptions-view {
+    border: 1px solid #f0f0f0;
+  }
+
+  .descriptions-view > table {
+    table-layout: auto;
+  }
+
+  .descriptions-item-label, .descriptions-item-content {
+    padding: 16px 24px;
+    border-right: 1px solid #f0f0f0;
+  }
+
+  .descriptions-item-label:last-child, .descriptions-item-content:last-child {
     border-right: none;
   }
+
+  .descriptions-item-label {
+    background-color: #fafafa;
+  }
+
+  .descriptions-item-label::after {
+    display: none;
+  }
+
+  .descriptions-row {
+    border-bottom: 1px solid #f0f0f0;
+  }
+
+  .descriptions-row:last-child {
+    border-bottom: none;
+  }
+}
+
+.descriptions-bordered.descriptions-middle .descriptions-item-label, .descriptions-bordered.descriptions-middle .descriptions-item-content {
+  padding: 12px 24px;
+}
+
+.descriptions-bordered.descriptions-small .descriptions-item-label, .descriptions-bordered.descriptions-small .descriptions-item-content {
+  padding: 8px 16px;
+}
+
+.descriptions-rtl {
+  direction: rtl;
+}
+
+.descriptions-rtl .descriptions-item-label::after {
+  margin: 0 2px 0 8px;
+}
 </style>
