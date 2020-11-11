@@ -53,8 +53,10 @@ See [Configuration Reference](https://cli.vuejs.org/config/).
 
 | 参数   | 说明                           | 类型                   | 默认值 |
 | ------ | ------------------------------ | ---------------------- | ------ |
-| title  | 描述列表的标题，显示在最顶部   | string \| v-slot:title | ''     |
-| column | 一行的 `DescriptionItems` 数量 | number                 | 4      |
+| title  | 描述列表的标题，显示在最顶部     | string \| v-slot:title | ''     |
+| column | 一行的 `DescriptionItems` 数量  | number                 | 4      |
+| bordered | 是否显示边框                  | Boolean                 | true      |
+| size | 显示尺寸                  | string                 | default (可选：default, middle, small)      |
 
 #### Item props
 

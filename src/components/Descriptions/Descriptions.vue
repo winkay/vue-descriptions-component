@@ -67,12 +67,14 @@ export default {
   props: {
     title: null, // 描述内容标题
     size: {
+      // 尺寸
       type: String,
       default: 'default'
     },
     bordered: {
+      // 是否显示边框
       type: Boolean,
-      default: false
+      default: true
     },
     column: {
       // 每行显示的项目个数
@@ -103,7 +105,9 @@ export default {
       dataList.forEach((item, index) => {
         const itemAttrs = item.data.attrs || {}
         // 处理column与span之间的关系
-        if (leftSpan <= (itemAttrs.span || 1)) { // 剩余的列数小于设置的span个数
+        console.log('before====', leftSpan, itemAttrs.span || 1)
+        if (leftSpan <= (itemAttrs.span || 1) || index === (dataList.length - 1)) {
+          // 剩余的列数小于设置的span个数, 或者最后一行的最后一列。自动补全，避免最后一列出现残缺的情况
           itemAttrs.span = leftSpan
           leftSpan = 0
         } else {
@@ -114,14 +118,15 @@ export default {
           label: (item.data && itemAttrs.label) || '',
           ...item
         })
+        console.log('after====', leftSpan, itemAttrs.span || 1)
         if (leftSpan <= 0) {
           leftSpan = this.column
-          this.$set(this.rows, this.rows.length, children)
+          children.length > 0 && this.$set(this.rows, this.rows.length, children)
           children = []
         }
         // 最后一行
         if (dataList.length % this.column < this.column && index === (dataList.length - 1)) {
-          this.$set(this.rows, this.rows.length, children)
+          children.length > 0 && this.$set(this.rows, this.rows.length, children)
         }
       })
     }
@@ -146,6 +151,7 @@ export default {
   table {
     width: 100%;
     table-layout: fixed;
+    border-collapse: collapse;
   }
 
   &:last-child {
@@ -211,7 +217,7 @@ export default {
 
 .descriptions-bordered {
   .descriptions-view {
-    border: 1px solid #f0f0f0;
+    border: 1px solid #f3f3f3;
   }
 
   .descriptions-view > table {
@@ -220,7 +226,7 @@ export default {
 
   .descriptions-item-label, .descriptions-item-content {
     padding: 16px 24px;
-    border-right: 1px solid #f0f0f0;
+    border: 1px solid #e8e8e8;
   }
 
   .descriptions-item-label:last-child, .descriptions-item-content:last-child {
@@ -228,7 +234,7 @@ export default {
   }
 
   .descriptions-item-label {
-    background-color: #fafafa;
+    background-color: #f3f3f3;
   }
 
   .descriptions-item-label::after {
@@ -236,7 +242,7 @@ export default {
   }
 
   .descriptions-row {
-    border-bottom: 1px solid #f0f0f0;
+    border: 1px solid #e8e8e8;
   }
 
   .descriptions-row:last-child {

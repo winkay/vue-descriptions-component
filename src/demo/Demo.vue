@@ -1,6 +1,6 @@
 <template>
   <div>
-    <descriptions :column="3">
+    <descriptions :column="2" :bordered='true'>
       <template v-slot:title>
         <span style="color:red">Descriptions Title Slot</span>
       </template>
@@ -19,8 +19,8 @@
       <descriptions-item label="email2">email@test.com</descriptions-item>
       <descriptions-item label="email3">email@test.com</descriptions-item>
       <descriptions-item label="name">User Name</descriptions-item>
-      <descriptions-item label="email1">email@test.com</descriptions-item>
-      <descriptions-item label="email2">email@test.com</descriptions-item>
+      <descriptions-item label="email4">email@test.com</descriptions-item>
+      <descriptions-item label="email5">email@test.com</descriptions-item>
     </descriptions>
   </div>
 </template>
