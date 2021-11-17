@@ -92,6 +92,9 @@ export default {
       this.generateChildrenRow(this.$slots.default || [])
     }
   },
+  beforeUpdate() {
+    this.generateChildrenRow(this.$slots.default || [])
+  },
   mounted() {
     this.generateChildrenRow(this.$slots.default || [])
   },
